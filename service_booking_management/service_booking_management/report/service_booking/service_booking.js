@@ -6,7 +6,8 @@ frappe.query_reports["Service Booking"] = {
 		{
 			"fieldname": "service_type",
 			"label": __("Service Type"),
-			"fieldtype": "Data"
+			"fieldtype": "Select",
+			"options": "\nTherapy\nSpa\nOther"
 		},
 		{
 			"fieldname": "status",
