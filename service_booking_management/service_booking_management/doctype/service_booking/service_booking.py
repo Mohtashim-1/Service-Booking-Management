@@ -3,6 +3,7 @@
 
 import frappe
 from frappe.model.document import Document
+import requests
 
 
 class ServiceBooking(Document):
@@ -30,3 +31,21 @@ class ServiceBooking(Document):
 				subject="Service Booking Approved",
 				message=message
 			)
+			self.send_to_webhook()
+
+	def send_to_webhook(self):
+		webhook_url = "https://webhook.site/d60ba3fe-0b57-4e20-9cc6-edf99c44e24e"
+		payload = {
+			"booking_id": self.name,
+			"customer_name": self.customer_name,
+			"customer_email": self.customer_email,
+			"service_type": self.service_type,
+			"preferred_datetime": str(self.preferred_datetime),
+			"status": self.status
+		}
+		try:
+			response = requests.post(webhook_url, json=payload, timeout=5)
+			response.raise_for_status()
+			frappe.msgprint("Booking details sent to webhook!")
+		except Exception as e:
+			frappe.log_error(f"Webhook error: {e}")
